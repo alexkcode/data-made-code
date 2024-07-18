@@ -16,9 +16,16 @@ class AddressParse(APIView):
     def get(self, request):
         # TODO: Flesh out this method to parse an address string using the
         # parse() method and return the parsed components to the frontend.
+        addr = ""
+        self.parse(addr)
         return Response({})
 
     def parse(self, address):
         # TODO: Implement this method to return the parsed components of a
         # given address using usaddress: https://github.com/datamade/usaddress
+        parsed = usaddress.tag(address)
+
+        address_components = parsed[0]
+        address_type = parsed[1]
+
         return address_components, address_type

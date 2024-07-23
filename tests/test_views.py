@@ -12,6 +12,7 @@ def test_api_parse_succeeds(client):
     resp = client.get(url, {'address': address_string})
     parsed_address = json.loads(resp.content)
     assert parsed_address
+    assert len(parsed_address) > 0
 
 
 def test_api_parse_raises_error(client):

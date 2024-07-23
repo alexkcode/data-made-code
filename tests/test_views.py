@@ -11,7 +11,6 @@ def test_api_parse_succeeds(client):
     url = urls.reverse('address-parse')
     resp = client.get(url, {'address': address_string})
     parsed_address = json.loads(resp.content)
-    print("PARSED ADDRESS", parsed_address)
     assert parsed_address
 
 
@@ -22,7 +21,6 @@ def test_api_parse_raises_error(client):
     url = urls.reverse('address-parse')
     try:
         resp = client.get(url, {'address': address_string})
-        parsed_address = json.loads(resp.content)
     except usaddress.RepeatedLabelError:
         assert True
     else:

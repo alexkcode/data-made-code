@@ -24,7 +24,10 @@ class AddressParse(APIView):
     def parse(self, address):
         # TODO: Implement this method to return the parsed components of a
         # given address using usaddress: https://github.com/datamade/usaddress
-        parsed = usaddress.tag(address)
+        try:
+            parsed = usaddress.tag(address)
+        except TypeError:
+            raise usaddress.RepeatedLabelError
 
         address_components = parsed[0]
         address_type = parsed[1]

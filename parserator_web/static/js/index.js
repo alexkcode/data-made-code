@@ -25,15 +25,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
          return response.json();
    })
    .then(parsedAddr => {
-      console.log('Success:', parsedAddr);
+      console.log('Parse Result:', parsedAddr);
       if (parsedAddr.status === 'success') {
          addRowToTable(parsedAddr);
       } else {
-         alert('Error: ' + parsedAddr.message);
+         alert('Parse Error: ' + parsedAddr.message);
       }
    })
    .catch((error) => {
-      console.error('Error:', error)
+      console.error('Table Render Error:', error)
    });
    });
 

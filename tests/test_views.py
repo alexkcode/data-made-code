@@ -9,7 +9,7 @@ def test_api_parse_succeeds(client):
     # data comes back in the appropriate format.
     address_string = '123 main st chicago il'
     url = urls.reverse('address-parse')
-    resp = client.get(url, {'address': address_string})
+    resp = client.post(url, {'address': address_string})
     parsed_address = json.loads(resp.content)
     assert parsed_address
     assert len(parsed_address) > 0

@@ -21,7 +21,8 @@ class AddressParse(APIView):
         addr_param = request.query_params.get('address')
         addr_components, addr_type = self.parse(addr_param)
         
-        output = {'input_string': addr_param,
+        output = {'status': 'success',
+                  'input_string': addr_param,
                   'address_components': addr_components,
                   'address_type': addr_type}
         

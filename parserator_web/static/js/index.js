@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
    .then(parsedAddr => {
       console.log('Parse Result:', parsedAddr);
       if (parsedAddr.status === 'success') {
-         addRowToTable(parsedAddr);
+         console.log('Parse success!')
+         document.getElementById('parse-type').textContent = parsedAddr.address_type
+         Object.entries(parsedAddr.address_components).map((c) => addRowToTable(c[1], c[0]))
       } else {
          alert('Parse Error: ' + parsedAddr.message);
       }
@@ -37,14 +39,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
    });
    });
 
-   function addRowToTable(parsedAddr) {
+   function addRowToTable(comp, type) {
       const table = document.getElementById('address-results').getElementsByTagName('tbody')[0];
       const newRow = table.insertRow();
 
       const addrComp = newRow.insertCell(0);
       const addrType = newRow.insertCell(1);
 
-      addrComp.textContent = parsedAddr.address_components;
-      addrType.textContent = parsedAddr.address_type;
+      addrComp.textContent = comp;
+      addrType.textContent = type;
+
+      console.log('Added row: ', addrComp, addrType)
    }
 });

@@ -11,7 +11,7 @@
       <p>Dealing with some messy or unstructured addresses? We can parse them for you.</p>
       <div class="card card-body bg-light">
         <p><strong>Try it out!</strong> Parse an address in the United States into fields like <code>AddressNumber</code>, <code>StreetName</code> and <code>ZipCode</code>.</p>
-        <form class="form" role="form">
+        <form class="form" role="form" id="form">
           {% csrf_token %}
           <input name="address" type="text" class="form-control" id="address" placeholder="123 Main St. Suite 100 Chicago, IL">
           <button id="submit" type="submit" class="btn btn-success mt-3">Parse!</button>
@@ -29,6 +29,7 @@
             </tr>
           </thead>
           <tbody>
+            <!-- Rows to be added dynamically here -->
           </tbody>
         </table>
       </div>
@@ -38,5 +39,50 @@
 {% endblock %}
 
 {% block extra_js %}
-  <script src="{% static 'js/index.js' %}"></script>
+  <script src="{% static 'js/index.js' %}">
+    document.getElementById('form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      let formData = new FormData(this);
+      let queryString = new URLSearchParams(formData).toString();
+
+      console.log('Form submitted!')
+      console.log(formData)
+
+      fetch(`/api/parse/?${queryString}`, {
+          method: 'GET',
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          }
+      })
+      .then(response => {
+          console.log('Response received:', response);
+          return response.json();
+      })
+      .then(parsedAddr => {
+        console.log('Success:', parsedAddr);
+        if (parsedAddr.status === 'success') {
+            addRowToTable(parsedAddr);
+        } else {
+            alert('Error: ' + parsedAddr.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      });
+
+      function addRowToTable(parsedAddr) {
+        const table = document.getElementById('address-results').getElementsByTagName('tbody')[0];
+        const newRow = table.insertRow();
+
+        const addrComp = newRow.insertCell(0);
+        const addrType = newRow.insertCell(1);
+
+        addrComp.textContent = parsedAddr.address_components;
+        addrType.textContent = parsedAddr.address_type;
+      }
+    })
+  </script>
 {% endblock %}

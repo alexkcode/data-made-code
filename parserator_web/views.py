@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.exceptions import ParseError
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
 
 
 class Home(TemplateView):
@@ -12,6 +12,7 @@ class Home(TemplateView):
 
 
 class AddressParse(APIView):
+    permission_classes = [AllowAny] 
     renderer_classes = [JSONRenderer]
 
     def get(self, request):
@@ -19,11 +20,12 @@ class AddressParse(APIView):
         # parse() method and return the parsed components to the frontend.
         addr_param = request.query_params.get('address')
         addr_components, addr_type = self.parse(addr_param)
-        print(addr_components)
-        return Response(JSONRenderer().render({'input_string': addr_param,
-                                               'address_components': addr_components,
-                                               'address_type': addr_type}), 
-                        content_type='application/json')
+        
+        output = {'input_string': addr_param,
+                  'address_components': addr_components,
+                  'address_type': addr_type}
+        
+        return Response(output)
         
 
     def parse(self, address):
